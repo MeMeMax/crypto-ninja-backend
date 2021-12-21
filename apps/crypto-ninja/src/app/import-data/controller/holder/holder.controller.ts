@@ -10,11 +10,18 @@ export class HolderController {
 
   @Get('import')
   async getStockDetails() {
-    const coins = (await lastValueFrom(this.holderService.getCoins())).data;
+    let coins = (await lastValueFrom(this.holderService.getCoins())).data;
+    const existingHolderData =
+      await this.holderService.getHolderDataFromToday();
+    coins = coins.filter((coin) => {
+      return !existingHolderData.find((existingCoin) => {
+        return existingCoin.coinId === coin.id;
+      });
+    });
 
     for (let coin of coins) {
       if (coin.platforms && coin.platforms['binance-smart-chain']) {
-        const holder = (
+        const holderAmount = (
           await lastValueFrom(
             this.holderService.getTokenHolder(
               coin.platforms['binance-smart-chain']
@@ -22,7 +29,12 @@ export class HolderController {
           )
         ).data.data.items.length;
 
-        console.log(holder);
+        await this.holderService.addHolder(
+          coin.id,
+          coin.name,
+          coin.symbol,
+          holderAmount
+        );
       }
     }
   }

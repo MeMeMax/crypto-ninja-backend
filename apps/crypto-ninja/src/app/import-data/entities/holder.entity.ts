@@ -6,7 +6,13 @@ export class Holder {
   id: number;
 
   @Column()
-  symbol: number;
+  coinId: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  symbol: string;
 
   @Column()
   amount: number;
