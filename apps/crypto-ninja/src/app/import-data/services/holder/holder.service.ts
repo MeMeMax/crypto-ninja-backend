@@ -16,11 +16,19 @@ export class HolderService {
   ) {}
 
   addHolder(coinId: string, name: string, symbol: string, amount: number) {
-    return this.holderRepo
-      .createQueryBuilder()
-      .insert()
-      .values({ coinId, name, symbol, amount })
-      .execute();
+    const date = new Date();
+    return this.holderRepo.upsert(
+      {
+        coinId,
+        name,
+        symbol,
+        amount,
+        day: date.getUTCDate(),
+        month: date.getUTCMonth() + 1,
+        year: date.getUTCFullYear(),
+      },
+      ['coinId', 'day', 'month', 'year']
+    );
   }
 
   getCoins(): Observable<AxiosResponse<any>> {
@@ -36,16 +44,17 @@ export class HolderService {
   }
 
   getHolderDataFromToday() {
-    const day = new Date().getDate();
-    const month = new Date().getMonth() + 1;
-    const year = new Date().getFullYear();
+    const day = new Date().getUTCDate();
+    const month = new Date().getUTCMonth() + 1;
+    const year = new Date().getUTCFullYear();
     return this.holderRepo
       .createQueryBuilder()
       .select('coinId')
-      .where(
-        'DAY(date) = :day AND MONTH(date) = :month AND YEAR(date) = :year',
-        { day, month, year }
-      )
+      .where('day = :day AND month = :month AND year = :year', {
+        day,
+        month,
+        year,
+      })
       .getRawMany();
   }
 }
