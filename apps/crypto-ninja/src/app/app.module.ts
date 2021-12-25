@@ -19,11 +19,11 @@ import { ImportDataModule } from './import-data/import-data.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
-      dateStrings: true,
+      dateStrings: true
     }),
-    ImportDataModule,
+    ImportDataModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

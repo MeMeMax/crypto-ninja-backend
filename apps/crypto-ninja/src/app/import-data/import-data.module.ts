@@ -9,6 +9,6 @@ import { HolderService } from './services/holder/holder.service';
 @Module({
   imports: [HttpModule, TypeOrmModule.forFeature([Holder])],
   controllers: [HolderController],
-  providers: [HolderService],
+  providers: [HolderService]
 })
 export class ImportDataModule {}

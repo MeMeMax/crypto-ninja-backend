@@ -11,10 +11,9 @@ export class HolderController {
   @Get('import')
   async getStockDetails() {
     let coins = (await lastValueFrom(this.holderService.getCoins())).data;
-    const existingHolderData =
-      await this.holderService.getHolderDataFromToday();
-    coins = coins.filter((coin) => {
-      return !existingHolderData.find((existingCoin) => {
+    const existingHolderData = await this.holderService.getHolderDataFromToday();
+    coins = coins.filter(coin => {
+      return !existingHolderData.find(existingCoin => {
         return existingCoin.coinId === coin.id;
       });
     });
@@ -22,20 +21,9 @@ export class HolderController {
     for (let coin of coins) {
       try {
         if (coin.platforms && coin.platforms['binance-smart-chain']) {
-          const holderAmount = (
-            await lastValueFrom(
-              this.holderService.getTokenHolder(
-                coin.platforms['binance-smart-chain']
-              )
-            )
-          ).data.data.items.length;
+          const holderAmount = (await lastValueFrom(this.holderService.getTokenHolder(coin.platforms['binance-smart-chain']))).data.data.items.length;
 
-          await this.holderService.addHolder(
-            coin.id,
-            coin.name,
-            coin.symbol,
-            holderAmount
-          );
+          await this.holderService.addHolder(coin.id, coin.name, coin.symbol, holderAmount);
         }
       } catch (err) {
         console.log(`${coin.id} failed.`);

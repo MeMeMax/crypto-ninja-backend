@@ -10,10 +10,7 @@ import { Holder } from '../../entities/holder.entity';
 
 @Injectable()
 export class HolderService {
-  constructor(
-    private http: HttpService,
-    @InjectRepository(Holder) private holderRepo: Repository<Holder>
-  ) {}
+  constructor(private http: HttpService, @InjectRepository(Holder) private holderRepo: Repository<Holder>) {}
 
   addHolder(coinId: string, name: string, symbol: string, amount: number) {
     const date = new Date();
@@ -25,16 +22,14 @@ export class HolderService {
         amount,
         day: date.getUTCDate(),
         month: date.getUTCMonth() + 1,
-        year: date.getUTCFullYear(),
+        year: date.getUTCFullYear()
       },
       ['coinId', 'day', 'month', 'year']
     );
   }
 
   getCoins(): Observable<AxiosResponse<any>> {
-    return this.http.get(
-      'https://api.coingecko.com/api/v3/coins/list?include_platform=true'
-    );
+    return this.http.get('https://api.coingecko.com/api/v3/coins/list?include_platform=true');
   }
 
   getTokenHolder(contractAddress: string): Observable<AxiosResponse<any>> {
@@ -53,7 +48,7 @@ export class HolderService {
       .where('day = :day AND month = :month AND year = :year', {
         day,
         month,
-        year,
+        year
       })
       .getRawMany();
   }
