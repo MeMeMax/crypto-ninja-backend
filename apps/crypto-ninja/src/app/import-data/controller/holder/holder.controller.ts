@@ -20,21 +20,25 @@ export class HolderController {
     });
 
     for (let coin of coins) {
-      if (coin.platforms && coin.platforms['binance-smart-chain']) {
-        const holderAmount = (
-          await lastValueFrom(
-            this.holderService.getTokenHolder(
-              coin.platforms['binance-smart-chain']
+      try {
+        if (coin.platforms && coin.platforms['binance-smart-chain']) {
+          const holderAmount = (
+            await lastValueFrom(
+              this.holderService.getTokenHolder(
+                coin.platforms['binance-smart-chain']
+              )
             )
-          )
-        ).data.data.items.length;
+          ).data.data.items.length;
 
-        await this.holderService.addHolder(
-          coin.id,
-          coin.name,
-          coin.symbol,
-          holderAmount
-        );
+          await this.holderService.addHolder(
+            coin.id,
+            coin.name,
+            coin.symbol,
+            holderAmount
+          );
+        }
+      } catch (err) {
+        console.log(`${coin.id} failed.`);
       }
     }
   }
